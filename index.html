@@ -99,5 +99,16 @@
         <p class="command-title">sudo nano /etc/postgresql/14/main/pg_hba.conf</p>
         <div class="tooltip">Editar el archivo <b>`pg_hba.conf`</b><br><b>`sudo nano /etc/postgresql/14/main/pg_hba.conf`</b>: Abre el archivo de configuracion de autenticacion de PostgreSQL<br><br>Añadir:<br><b>host dspace dspace <IP_YOUR_SERVER>/32 md5</IP_YOUR_SERVER></b><br><b>`host dspace dspace <IP_YOUR_SERVER>/32 md5`</b>: Permite conexiones del usuario <b>`dspace`</b> desde la direccion IP del servidor de aplicaciones usando autenticacion <b>`md5`</b>.</div>
     </div>
+    <br><br>
+    <h4>3.1 Permitir conexiones en el archivo `postgresql.conf`</h4>
+    <div class="command-box">
+        <p class="command-title">sudo nano /etc/postgresql/14/main/postgresql.conf</p>
+        <div class="tooltip"><b>`sudo nano /etc/postgresql/14/main/postgresql.conf`</b>: Abre el archivo de configuracion principal de PostgreSQL<br> Descomentar y ajustar: <b>listen _addresses = '*'</b><br><br><b>listen _addresses = '*'</b>: Permite que PostgreSQL escuche en todas las direcciones IP</div>
+    </div>
+    <br><br>
+    <h4>3.2 Reiniciar PostgreSQL</h4>
+    <div class="command-box">
+        <p class="command-title">sudo systemctl restart postgresql</p>
+    </div>
 </body>
 </html>
