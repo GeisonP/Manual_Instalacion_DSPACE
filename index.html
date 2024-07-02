@@ -87,12 +87,17 @@
     <h3>1. Actualizar paquetes</h3>
     <div class="command-box">
         <p class="command-title">sudo apt update && sudo apt upgrade -y</p>
-        <div class="tooltip">`sudo apt update`: Actualiza la lista de paquetes disponibles y sus versiones<br>`sudo apt upgrade -y`: Instala las versiones más recientes de todos los paquetes instalados en el sistema</div>
+        <div class="tooltip"><b>`sudo apt update`</b>: Actualiza la lista de paquetes disponibles y sus versiones<br><b>`sudo apt upgrade -y`</b>: Instala las versiones más recientes de todos los paquetes instalados en el sistema</div>
     </div>
     <h3>2. Instalar PostgreSQL</h3>
     <div class="command-box">
         <p class="command-title">sudo apt-get install postgresql postgresql-contrib libpostgresql-jdbc-java -y</p>
-        <div class="tooltip">`sudo apt-get install postgresql postgresql-contrib libpostgresql-jdbc-java -y`: Instala PostgreSQL, herramientas adicionales y el controlador JDBC y PostgreSQL</div>
+        <div class="tooltip"><b>`sudo apt-get install postgresql postgresql-contrib libpostgresql-jdbc-java -y`</b>: Instala PostgreSQL, herramientas adicionales y el controlador JDBC y PostgreSQL</div>
+    </div>
+    <h3>3. Configurar PostgreSQL para permitir conexiones remotas</h3>
+    <div class="command-box">
+        <p class="command-title">sudo nano /etc/postgresql/14/main/pg_hba.conf</p>
+        <div class="tooltip">Editar el archivo <b>`pg_hba.conf`</b><br><b>`sudo nano /etc/postgresql/14/main/pg_hba.conf`</b>: Abre el archivo de configuracion de autenticacion de PostgreSQL<br><br>Añadir:<br><b>host dspace dspace <IP_YOUR_SERVER>/32 md5</IP_YOUR_SERVER></b><br><b>`host dspace dspace <IP_YOUR_SERVER>/32 md5`</b>: Permite conexiones del usuario <b>`dspace`</b> desde la direccion IP del servidor de aplicaciones usando autenticacion <b>`md5`</b>.</div>
     </div>
 </body>
 </html>
