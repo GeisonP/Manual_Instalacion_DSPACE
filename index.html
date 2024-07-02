@@ -56,9 +56,14 @@
         left: 50%;
         transform: translateX(-50%);
         z-index: 1;
-        white-space: nowrap;
+        white-space: normal;
         width: 100%;
         box-sizing: border-box;
+    }
+    .command-box:hover .tooltip {
+        display: block;
+        top: 100%;
+        margin-top: 10px;
     }
     @keyframes pulse {
         0% {
@@ -97,18 +102,17 @@
     <h3>3. Configurar PostgreSQL para permitir conexiones remotas</h3>
     <div class="command-box">
         <p class="command-title">sudo nano /etc/postgresql/14/main/pg_hba.conf</p>
-        <div class="tooltip">Editar el archivo <b>`pg_hba.conf`</b><br><b>`sudo nano /etc/postgresql/14/main/pg_hba.conf`</b>: Abre el archivo de configuracion de autenticacion de PostgreSQL<br><br>Añadir:<br><b>host dspace dspace <IP_YOUR_SERVER>/32 md5</IP_YOUR_SERVER></b><br><b>`host dspace dspace <IP_YOUR_SERVER>/32 md5`</b>: Permite conexiones del usuario <b>`dspace`</b> desde la direccion IP del servidor de aplicaciones usando autenticacion <b>`md5`</b>.</div>
+        <div class="tooltip">Editar el archivo <b>`pg_hba.conf`</b><br><b>`sudo nano /etc/postgresql/14/main/pg_hba.conf`</b>: Abre el archivo de configuración de autenticación de PostgreSQL<br><br>Añadir:<br><b>host dspace dspace <IP_YOUR_SERVER>/32 md5</IP_YOUR_SERVER></b><br><b>`host dspace dspace <IP_YOUR_SERVER>/32 md5`</b>: Permite conexiones del usuario <b>`dspace`</b> desde la dirección IP del servidor de aplicaciones usando autenticación <b>`md5`</b>.</div>
     </div>
-    <br><br>
     <h4>3.1 Permitir conexiones en el archivo `postgresql.conf`</h4>
     <div class="command-box">
         <p class="command-title">sudo nano /etc/postgresql/14/main/postgresql.conf</p>
-        <div class="tooltip"><b>`sudo nano /etc/postgresql/14/main/postgresql.conf`</b>: Abre el archivo de configuracion principal de PostgreSQL<br> Descomentar y ajustar: <b>listen _addresses = '*'</b><br><br><b>listen _addresses = '*'</b>: Permite que PostgreSQL escuche en todas las direcciones IP</div>
+        <div class="tooltip"><b>`sudo nano /etc/postgresql/14/main/postgresql.conf`</b>: Abre el archivo de configuración principal de PostgreSQL<br> Descomentar y ajustar: <b>listen_addresses = '*'</b><br><br><b>listen_addresses = '*'</b>: Permite que PostgreSQL escuche en todas las direcciones IP</div>
     </div>
-    <br><br>
     <h4>3.2 Reiniciar PostgreSQL</h4>
     <div class="command-box">
         <p class="command-title">sudo systemctl restart postgresql</p>
+        <div class="tooltip"><b>`sudo systemctl restart postgresql`</b>: Reinicia el servicio de PostgreSQL para aplicar los cambios</div>
     </div>
 </body>
 </html>
