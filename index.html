@@ -18,9 +18,11 @@
         position: relative;
         transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
         border-radius: 10px;
+        max-width: 90%;
+        box-sizing: border-box;
     }
     .command-box:hover {
-        transform: scale(1.05);
+        transform: scale(1.02);
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         background-color: rgba(0, 0, 0, 0.8);
     }
@@ -48,13 +50,15 @@
         position: absolute;
         background: #fff;
         color: #000;
-        padding: 5px;
-        border-radius: 5px;
+        padding: 10px;
+        border-radius: 10px;
         top: 100%;
         left: 50%;
         transform: translateX(-50%);
         z-index: 1;
         white-space: nowrap;
+        width: 100%;
+        box-sizing: border-box;
     }
     @keyframes pulse {
         0% {
@@ -85,7 +89,7 @@
         <p class="command-title">sudo apt update && sudo apt upgrade -y</p>
         <div class="tooltip">`sudo apt update`: Actualiza la lista de paquetes disponibles y sus versiones<br>`sudo apt upgrade -y`: Instala las versiones más recientes de todos los paquetes instalados en el sistema</div>
     </div>
-    <h3>Instalar PostgreSQL</h3>
+    <h3>2. Instalar PostgreSQL</h3>
     <div class="command-box">
         <p class="command-title">sudo apt-get install postgresql postgresql-contrib libpostgresql-jdbc-java -y</p>
         <div class="tooltip">`sudo apt-get install postgresql postgresql-contrib libpostgresql-jdbc-java -y`: Instala PostgreSQL, herramientas adicionales y el controlador JDBC y PostgreSQL</div>
