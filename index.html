@@ -89,7 +89,7 @@
     <h2>Configuración de la base de datos</h2>
     <hr>
     
-    <h3>1. Actualizar paquetes</h3>
+<h3>1. Actualizar paquetes</h3>
     <div class="command-box">
         <p class="command-title">sudo apt update && sudo apt upgrade -y</p>
         <div class="tooltip"><b>`sudo apt update`</b>: Actualiza la lista de paquetes disponibles y sus versiones<br><b>`sudo apt upgrade -y`</b>: Instala las versiones más recientes de todos los paquetes instalados en el sistema</div>
@@ -113,6 +113,71 @@
     <div class="command-box">
         <p class="command-title">sudo systemctl restart postgresql</p>
         <div class="tooltip"><b>`sudo systemctl restart postgresql`</b>: Reinicia el servicio de PostgreSQL para aplicar los cambios</div>
+    </div>
+
+    <hr>
+    <h2>Instalación y configuración de DSpace</h2>
+    <hr>
+    
+    <h3>4. Instalar Java</h3>
+    <div class="command-box">
+        <p class="command-title">sudo apt-get install openjdk-11-jdk</p>
+        <div class="tooltip"><b>`sudo apt-get install openjdk-11-jdk`</b>: Instala OpenJDK 11, que es necesario para ejecutar DSpace</div>
+    </div>
+    <h3>5. Instalar Maven</h3>
+    <div class="command-box">
+        <p class="command-title">sudo apt-get install maven</p>
+        <div class="tooltip"><b>`sudo apt-get install maven`</b>: Instala Maven, una herramienta de gestión y comprensión de proyectos utilizada por DSpace</div>
+    </div>
+    <h3>6. Descargar y descomprimir DSpace</h3>
+    <div class="command-box">
+        <p class="command-title">wget https://github.com/DSpace/DSpace/releases/download/dspace-6.3/dspace-6.3-release.zip</p>
+        <div class="tooltip"><b>`wget https://github.com/DSpace/DSpace/releases/download/dspace-6.3/dspace-6.3-release.zip`</b>: Descarga la versión 6.3 de DSpace</div>
+    </div>
+    <div class="command-box">
+        <p class="command-title">unzip dspace-6.3-release.zip</p>
+        <div class="tooltip"><b>`unzip dspace-6.3-release.zip`</b>: Descomprime el archivo descargado</div>
+    </div>
+    <h3>7. Construir DSpace con Maven</h3>
+    <div class="command-box">
+        <p class="command-title">cd dspace-6.3-release</p>
+        <div class="tooltip"><b>`cd dspace-6.3-release`</b>: Navega al directorio descomprimido de DSpace</div>
+    </div>
+    <div class="command-box">
+        <p class="command-title">mvn package</p>
+        <div class="tooltip"><b>`mvn package`</b>: Construye el paquete de DSpace usando Maven</div>
+    </div>
+    <h3>8. Crear la base de datos de DSpace en PostgreSQL</h3>
+    <div class="command-box">
+        <p class="command-title">sudo -u postgres createuser --username=postgres --no-superuser --pwprompt dspace</p>
+        <div class="tooltip"><b>`sudo -u postgres createuser --username=postgres --no-superuser --pwprompt dspace`</b>: Crea un nuevo usuario de PostgreSQL llamado <b>`dspace`</b> sin permisos de superusuario y con una contraseña solicitada</div>
+    </div>
+    <div class="command-box">
+        <p class="command-title">sudo -u postgres createdb --username=postgres --owner=dspace --encoding=UNICODE dspace</p>
+        <div class="tooltip"><b>`sudo -u postgres createdb --username=postgres --owner=dspace --encoding=UNICODE dspace`</b>: Crea una nueva base de datos llamada <b>`dspace`</b> con el propietario <b>`dspace`</b> y codificación <b>UNICODE</b></div>
+    </div>
+    <h3>9. Configurar DSpace</h3>
+    <div class="command-box">
+        <p class="command-title">cd dspace/target/dspace-installer</p>
+        <div class="tooltip"><b>`cd dspace/target/dspace-installer`</b>: Navega al directorio del instalador de DSpace</div>
+    </div>
+    <div class="command-box">
+        <p class="command-title">ant fresh_install</p>
+        <div class="tooltip"><b>`ant fresh_install`</b>: Realiza una instalación fresca de DSpace</div>
+    </div>
+    <h3>10. Configurar Tomcat</h3>
+    <div class="command-box">
+        <p class="command-title">sudo apt-get install tomcat9</p>
+        <div class="tooltip"><b>`sudo apt-get install tomcat9`</b>: Instala el servidor de aplicaciones Tomcat 9</div>
+    </div>
+    <div class="command-box">
+        <p class="command-title">sudo cp -r /dspace/webapps/* /var/lib/tomcat9/webapps/</p>
+        <div class="tooltip"><b>`sudo cp -r /dspace/webapps/* /var/lib/tomcat9/webapps/`</b>: Copia las aplicaciones web de DSpace al directorio de aplicaciones web de Tomcat</div>
+    </div>
+    <h3>11. Reiniciar Tomcat</h3>
+    <div class="command-box">
+        <p class="command-title">sudo systemctl restart tomcat9</p>
+        <div class="tooltip"><b>`sudo systemctl restart tomcat9`</b>: Reinicia el servicio de Tomcat para aplicar los cambios</div>
     </div>
 </body>
 </html>
