@@ -38,9 +38,6 @@
         animation: pulse 1s infinite;
         pointer-events: none;
     }
-    .command-box:hover .tooltip {
-        display: block;
-    }
     .command-title {
         font-weight: bold;
         color: #fff;
@@ -55,7 +52,7 @@
         top: 100%;
         left: 50%;
         transform: translateX(-50%);
-        z-index: 1;
+        z-index: 1; /* Asegura que la descripción esté por encima de otros elementos */
         white-space: normal;
         width: 100%;
         box-sizing: border-box;
