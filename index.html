@@ -44,23 +44,36 @@
     }
     .tooltip {
         display: none;
-        position: absolute;
+        position: fixed; /* Cambiado de 'absolute' a 'fixed' */
         background: #fff;
         color: #000;
         padding: 10px;
         border-radius: 10px;
-        top: 100%;
+        z-index: 1000; /* Aumentado para asegurar que esté por encima de todo */
+        white-space: normal;
+        width: 80%; /* Ancho fijo para todas las descripciones */
+        max-width: 600px; /* Máximo ancho para pantallas grandes */
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Sombra para destacar */
         left: 50%;
         transform: translateX(-50%);
-        z-index: 1; /* Asegura que la descripción esté por encima de otros elementos */
-        white-space: normal;
-        width: 100%;
-        box-sizing: border-box;
+        top: 50px; /* Posición fija desde la parte superior */
     }
+    
     .command-box:hover .tooltip {
         display: block;
-        top: 100%;
-        margin-top: 10px;
+    }
+    
+    /* Nuevo estilo para oscurecer el fondo cuando se muestra la descripción */
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
     }
     @keyframes pulse {
         0% {
@@ -117,66 +130,172 @@
     <hr>
     <h2>Instalación y configuración de DSpace</h2>
     <hr>
-    
-    <h3>4. Instalar Java</h3>
+
+    <h3>4. Crear usuario del sistema DSpace</h3>
+    <div class="command-box">
+        <p class="command-title">sudo adduser dspace<br>usermod -aG sudo dspace</p>
+        <div class="tooltip"><b>`sudo adduser dspace`</b>: Crea un nuevo usuario del sistema llamado <b>`dspace`</b><br><b>`usermod -aG sudo dspace`</b>: Añade el usuario <b>`dspace`</b> al grupo <b>`sudo`</b> para concederle privilegios de administrador</div>
+    </div>
+    <h3>5. Instalar Java</h3>
     <div class="command-box">
         <p class="command-title">sudo apt-get install openjdk-11-jdk</p>
         <div class="tooltip"><b>`sudo apt-get install openjdk-11-jdk`</b>: Instala OpenJDK 11, que es necesario para ejecutar DSpace</div>
     </div>
-    <h3>5. Instalar Maven</h3>
+    <h3>6. Instalar Maven</h3>
     <div class="command-box">
         <p class="command-title">sudo apt-get install maven</p>
         <div class="tooltip"><b>`sudo apt-get install maven`</b>: Instala Maven, una herramienta de gestión y comprensión de proyectos utilizada por DSpace</div>
     </div>
-    <h3>6. Descargar y descomprimir DSpace</h3>
+    <h3>7. Instalar Git</h3>
     <div class="command-box">
-        <p class="command-title">wget https://github.com/DSpace/DSpace/releases/download/dspace-6.3/dspace-6.3-release.zip</p>
-        <div class="tooltip"><b>`wget https://github.com/DSpace/DSpace/releases/download/dspace-6.3/dspace-6.3-release.zip`</b>: Descarga la versión 6.3 de DSpace</div>
+        <p class="command-title">sudo apt-get install git</p>
+        <div class="tooltip"><b>`sudo apt-get install git`</b>: Prepara tu entorno de servidor para manejar el código fuente de DSpace</div>
     </div>
+    <h3>8. Instalar y configurar Solr</h3>
     <div class="command-box">
-        <p class="command-title">unzip dspace-6.3-release.zip</p>
-        <div class="tooltip"><b>`unzip dspace-6.3-release.zip`</b>: Descomprime el archivo descargado</div>
+        <p class="command-title">wget -c https://dlcdn.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz<br>tar xvf solr-8.11.2.tgz<br>sudo bash solr-8.11.2/bin/install_solr_service.sh solr-8.11.2.tgz</p>
+        <div class="tooltip"><b>`wget -c https://dlcdn.apache.org/lucene/solr/8.11.2/solr-8.11.2.tgz`</b>: Descarga el archivo comprimido de Solr<br><b>`tar xvf solr-8.11.2.tgz`</b>: Extrae los archivos del archivo comprimido<br><b>`sudo bash solr-8.11.2/bin/install_solr_service.sh solr-8.11.2.tgz`</b>: Ejecuta el script de instalacion de Solr</div>
     </div>
-    <h3>7. Construir DSpace con Maven</h3>
+    <h3>9. Instalar Tomcat9</h3>
     <div class="command-box">
-        <p class="command-title">cd dspace-6.3-release</p>
-        <div class="tooltip"><b>`cd dspace-6.3-release`</b>: Navega al directorio descomprimido de DSpace</div>
+        <p class="command-title">sudo apt install tomcat9<br>sudo nano /etc/default/tomcat9<br># Añadir:<br>
+        JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64<br>sudo nano /etc/tomcat9/server.xml<br><br>
+        # Ajustar el conector:<br>
+        <Connector port="8080"<br>
+            minSpareThreads="25"<br>
+            enableLookups="false"<br>
+            address="127.0.0.1"<br>
+            redirectPort="8443"<br>
+            connectionTimeout="20000"<br>
+            disableUploadTimeout="true"<br>
+            URIEncoding="UTF-8"/><br>
+        sudo service tomcat9 restart
+        </p>
+        <div class="tooltip"><b>`sudo apt install tomcat9`</b>: Instala el servicio Tomcat9<br>
+        <b>`sudo nano /etc/default/tomcat9`</b>: Abre el archivo de configuracion de Tomcat9<br>
+        <b>`JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64`</b>: Configura la variable de entorno <b>`JAVA_HOME`</b><br>
+        <b>`sudo nano /etc/tomcat9/server.xml`</b>: Abre el archivo de configuracion del servidor Tomcat<br>
+        Ajustar el conector: Configura Tomcat para usar UFT-8.<br>
+        <b>`sudo service tomcat9 restart`</b>: Reinicia el servicio de Tomcat para aplicar los cambios</div>
     </div>
+    <h3>10. Instalar backend de DSpace</h3>
     <div class="command-box">
-        <p class="command-title">mvn package</p>
-        <div class="tooltip"><b>`mvn package`</b>: Construye el paquete de DSpace usando Maven</div>
+        <p class="command-title">wget -c https://github.com/DSpace/DSpace/archive/refs/tags/dspace-7.6.tar.gz<br>
+            tar -zxvf dspace-7.6.tar.gz<br>
+            mv DSpace-dspace-7.6 dspace-server-src<br>
+            cd dspace-server-src<br>
+            sudo mkdir /opt/dspace-7 && sudo mkdir /opt/dspace-7/server<br>
+            sudo chown dspace:dspace -R /opt/dspace-7/server<br>
+            cp dspace/config/local.cfg.EXAMPLE dspace/config/local.cfg<br>
+            nano dspace/config/local.cfg<br><br>
+            
+            # Ajustar las siguientes configuraciones:<br>
+            dspace.dir=/opt/dspace-7/server<br>
+            dspace.server.url = http://YOUR-SERVER-IP:8080/server<br>
+            dspace.ui.url = http://YOUR-SERVER-IP<br>
+            solr.server = http://localhost:8983/solr<br>
+            db.url = jdbc:postgresql://IP_YOUR_DATABASE:5432/dspace<br>
+            db.driver = org.postgresql.Driver<br>
+            db.username = dspace<br>
+            db.password = your-db-password
+        </p>
+        <div class="tooltip"><b>`wget -c https://github.com/DSpace/DSpace/archive/refs/tags/dspace-7.6.tar.gz`</b>: Descarga el archivo comprimido del código fuente de DSpace versión 7.6 desde GitHub<br>
+        <b>`tar -zxvf dspace-7.6.tar.gz`</b>: Extrae el contenido del archivo comprimido <b>dspace-7.6.tar.gz</b>.<br>
+        <b>`mv DSpace-dspace-7.6 dspace-server-src`</b>: Mueve el directorio extraído <b>`DSpace-dspace-7.6`</b> a <b>`dspace-server-src`</b> para facilitar la identificación y manejo del código fuente.<br>
+        <b>`cd dspace-server-src`</b>: Cambia el directorio de trabajo al nuevo directorio <b>`dspace-server-src`</b> donde está el código fuente de DSpace.<br>
+        <b>`sudo mkdir /opt/dspace-7 && sudo mkdir /opt/dspace-7/server`</b>:Crea los directorios <b>`/opt/dspace-7`</b> y <b>`/opt/dspace-7/server`</b> donde se almacenarán los archivos de DSpace.<br>
+        <b>`sudo chown dspace:dspace -R /opt/dspace-7/server`</b>: Cambia el propietario del directorio <b>`/opt/dspace-7/server`</b> al usuario y grupo <b>`dspace`</b> de manera recursiva, asegurando que DSpace tenga los permisos necesarios para operar en este directorio.<br>
+        <b>`cp dspace/config/local.cfg.EXAMPLE dspace/config/local.cfg`</b>: Copia el archivo de configuración de ejemplo <b>`local.cfg.EXAMPLE`</b> a <b>`local.cfg`</b>, que es el archivo de configuración real que se utilizará.<br>
+        <b>`nano dspace/config/local.cfg`</b>: Abre el archivo de configuración `<b>`local.cfg`</b> en el editor de texto nano para su edición.<br>
+        Ajustar las configuraciones: Configura las rutas y las credenciales de la base de datos</div>
     </div>
-    <h3>8. Crear la base de datos de DSpace en PostgreSQL</h3>
+    <h3>11. Construir y desplegar DSpace</h3>
     <div class="command-box">
-        <p class="command-title">sudo -u postgres createuser --username=postgres --no-superuser --pwprompt dspace</p>
-        <div class="tooltip"><b>`sudo -u postgres createuser --username=postgres --no-superuser --pwprompt dspace`</b>: Crea un nuevo usuario de PostgreSQL llamado <b>`dspace`</b> sin permisos de superusuario y con una contraseña solicitada</div>
+        <p class="command-title">mvn package<br>cd dspace/target/dspace-installer<br>ant fresh_install<br>
+        sudo ln -s /opt/dspace-7/server/webapps/server/ /var/lib/tomcat9/webapps/server<br>sudo cp -r /opt/dspace-7/server/solr/* /var/solr/data/<br>
+        sudo chown solr:solr -R /var/solr/data<br>sudo systemctl restart solr<br>sudo nano /etc/systemd/system/multi-user.target.wants/tomcat9.service<br><br>
+        # Añadir:<br>
+        ReadWritePaths=/opt/dspace-7/server/<br>sudo systemctl daemon-reload && sudo service tomcat9 restart<br>cd /opt/dspace-7/server<br>./bin/dspace database migrate
+        </p>
+        <div class="tooltip"><b>`mvn package`</b>: Construye el proyecto DSpace usando Maven.<br><b>`cd dspace/target/dspace-installer`</b>: Cambia al directorio del instalador de DSpace.<br>
+        <b>`ant fresh_install`</b>: Realiza una instalación limpia de DSpace.<br><b>`sudo ln -s /opt/dspace-7/server/webapps/server/ /var/lib/tomcat9/webapps/server`</b>: Crea un enlace simbólico para desplegar DSpace en Tomcat.<br>
+        <b>`sudo cp -r /opt/dspace-7/server/solr/* /var/solr/data/`</b>: Copia los datos de Solr al directorio de Solr.<br><b>`sudo chown solr:solr -R /var/solr/data`</b>: Cambia la propiedad del directorio de Solr al usuario <b>`solr`</b>.<br>
+        <b>`sudo systemctl restart solr`</b>: Reinicia el servicio de Solr.<br><b>`sudo nano /etc/systemd/system/multi-user.target.wants/tomcat9.service`</b>: Abre el archivo de servicio de Tomcat9.<br>
+        <b>`ReadWritePaths-/opt/dspace-7/server/`</b>: Configura permisos de lectura/escritura para Tomcat.<br>
+        <b>`sudo systemctl daemon-reload && sudo service tomcat9 restart`</b>: Recarga el demonio de systemd y reinicia Tomcat.<br>
+        <b>`cd /opt/dspace-7/server`</b>: Cambia al directorio de DSpace.<br><b>`./bin/dspace database migrate`</b>: Migra la base de datos de DSpace.</div>
     </div>
+    <h3>12. Instalar el frontend de Angular</h3>
     <div class="command-box">
-        <p class="command-title">sudo -u postgres createdb --username=postgres --owner=dspace --encoding=UNICODE dspace</p>
-        <div class="tooltip"><b>`sudo -u postgres createdb --username=postgres --owner=dspace --encoding=UNICODE dspace`</b>: Crea una nueva base de datos llamada <b>`dspace`</b> con el propietario <b>`dspace`</b> y codificación <b>UNICODE</b></div>
+        <p class="command-title">wget -c https://github.com/DSpace/dspace-angular/archive/refs/tags/dspace-7.6.tar.gz<br>tar -zxvf dspace-7.6.tar.gz<br>mv dspace-angular-dspace-7.6 dspace-7-angular<br>cd dspace-7-angular<br>
+        curl -o- https://raw.githubusercontent.com/creationix/nvm/ve.39.1/install.sh | bash<br>source ~/.nvm/nvm.sh<br>sudo apt install npm<br>sudo npm install --global yarn<br>sudo npm install -g n<br>
+        sudo n 18<br>sudo npm install -g pm2<br>yarn install<br>yarn build:prod<br>sudo mkdir /opt/dspace-7/client<br>sudo chown dspace:dspace -R /opt/dspace-7/client/<br>cp -r dist /opt/dspace-7/client/<br>mkdir /opt/dspace-7/client/config<br>
+        cp config/config.example.yml /opt/dspace-7/client/config/config.prod.yml<br>nano /opt/dspace-7/client/config/config.prod.yml</p>
+        <div class="tooltip"><b>`wget -c https://github.com/DSpace/dspace-angular/archive/refs/tags/dspace-7.6.tar.gz`</b>: Descargar el codigo fuente del frontend de DSpace<br>
+        <b>`tar -zxvf dspace-7.6.tar.gz`</b>: Extraer los archivos del archivo comprimido<br>
+        <b>`mv dspace-angular-dspace-7.6 dspace-7-angular`</b>: Renombra el directorio para simplificar<br>
+        <b>`cd dspace-7-angular`</b>: Cambiar el directorio del codigo fuente de Angular<br>
+        <b>`curl -o- https://raw.githubusercontent.com/creationix/nvm/ve.39.1/install.sh | bash`</b>: Instala NVM (Node Version Manager)<br>
+        <b>`source ~/.nvm/nvm.sh`</b>: Carga NVM en la sesion actual.<br>
+        <b>`sudo apt install npm`</b>: Instala NPM (Node Package Manager)<br>
+        <b>`sudo npm install --global yarn`</b>: Instala yarn globalmente<br>
+        <b>`sudo npm install -g n`</b>: Instala la herramienta `n` para gestionar versiones de Node.js<br>
+        <b>`sudo n 18`</b>: Instala Node.js version 18.<br>
+        <b>`sudo npm install -g pm2`</b>: Instala PM2 para gestionar procesos Node.js<br>
+        <b>`yarn install`</b>: Instala las dependencias del proyecto Angular.<br>
+        <b>`yarn build:prod`</b>: Construye la Aplicacion Angular  para produccion.<br>
+        <b>`sudo mkdir /opt/dspace-7/client`</b>: Crea el directorio de despliegue del Cliente.<br>
+        <b>`sudo chown dspace:dspace -R /opt/dspace-7/client/`</b>: Cambia la propiedad del directorio al usuario `dspace`.<br>
+        <b>`cp -r dist /opt/dspace-7/client/`</b>: Copia los archivos construidos al directorio de despliegue.<br>
+        <b>`mkdir /opt/dspace-7/client/config`</b>: Crea el directorio de configuracion.<br>
+        <b>`cp config/config.example.yml /opt/dspace-7/client/config/config.prod.yml`</b>: Copia el archivo de configuracion de ejemplo<br>
+        <b>`nano /opt/dspace-7/client/config/config.prod.yml`</b>: Abre el archivo de configuracion para editar.</div>
     </div>
-    <h3>9. Configurar DSpace</h3>
+    <h3>13. Configurar Nginx como proxy inverso</h3>
     <div class="command-box">
-        <p class="command-title">cd dspace/target/dspace-installer</p>
-        <div class="tooltip"><b>`cd dspace/target/dspace-installer`</b>: Navega al directorio del instalador de DSpace</div>
+        <p class="command-title">sudo apt install nginx -y<br>sudo nano /etc/nginx/sites-enabled/default<br>
+            server { <br>
+                listen 80;<br>
+                server_name  your-domain.com;
+                access_log /var/log/nginx/dspace-access.log;<br>
+                error_log /var/log/nginx/dspace-error.log<br>
+                location /server {<br>
+                    proxy_set_header X-Forwarded-Proto https;<br>
+                    proxy_set_header X-Forwarded-Host $server_name;<br>
+                    proxy_pass https://localhost:8080/server;<br>
+                }<br>
+                location / {<br>
+                    proxy_set_header X-Forwarded-Host $host;<br>
+                    proxy_pass https://localhost:8080/server;<br>
+                }<br>
+                location / {<br>
+                    proxy_set_header X-Forwarded-Host $host;<br>
+                    proxy_set_header X-Forwarded-Server $host;<br>
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;<br>
+                    proxy_pass https://localhost:4000/;<br>
+                }<br>
+            }<br>
+            sudo service nginx restart
+        </p>
+        <div class="tooltip"><b>`sudo apt install nginx -y`</b>: Instala el servidor web Nginx.<br>
+        <b>`sudo nano /etc/nginx/sites-enabled/default`</b>: Abre el archivo de configuracion del sitio predeterminado.<br>
+        Configurar el bloque de servidor: Configura Nginx para actual como proxy inverso para el backend y el frontend de DSpace.<br>
+        <b>`sudo service nginx restart`</b>: Reinicia el servicio Nginx para aplicar los cambios</div>
     </div>
+    <h3>14. Configurar HTTPS con Certbot</h3>
     <div class="command-box">
-        <p class="command-title">ant fresh_install</p>
-        <div class="tooltip"><b>`ant fresh_install`</b>: Realiza una instalación fresca de DSpace</div>
+        <p class="command-title">sudo snap install --classic certbot<br>sudo ln -s /snap/bin/certbot /usr/bin/certbot<br>sudo certbot --nginx</p>
+        <div class="tooltip"><b>`sudo snap install --classic certbot`</b>: Instala Certbot usando snap.<br>
+            <b>`sudo ln -s /snap/bin/certbot /usr/bin/certbo`</b>: Crea un enlace simbolico para usar Certbot<br>
+            <b>`sudo certbot --nginx`</b>: Configura HTTPS para Nginx usando Certbot.
+        </div>
     </div>
-    <h3>10. Configurar Tomcat</h3>
+    <h3>14. Crear la cuenta de administrador de DSpace</h3>
     <div class="command-box">
-        <p class="command-title">sudo apt-get install tomcat9</p>
-        <div class="tooltip"><b>`sudo apt-get install tomcat9`</b>: Instala el servidor de aplicaciones Tomcat 9</div>
-    </div>
-    <div class="command-box">
-        <p class="command-title">sudo cp -r /dspace/webapps/* /var/lib/tomcat9/webapps/</p>
-        <div class="tooltip"><b>`sudo cp -r /dspace/webapps/* /var/lib/tomcat9/webapps/`</b>: Copia las aplicaciones web de DSpace al directorio de aplicaciones web de Tomcat</div>
-    </div>
-    <h3>11. Reiniciar Tomcat</h3>
-    <div class="command-box">
-        <p class="command-title">sudo systemctl restart tomcat9</p>
-        <div class="tooltip"><b>`sudo systemctl restart tomcat9`</b>: Reinicia el servicio de Tomcat para aplicar los cambios</div>
+        <p class="command-title">cp /opt/dspace-7/server<br>sudo bin/dspace create-administrator</p>
+        <div class="tooltip"><b>`cp /opt/dspace-7/server`</b>: Cambia el directorio del servidor DSpace<br>
+            <b>`sudo bin/dspace create-administrator`</b>: Ejecutar el comando para crear la cuenta de administrador
+        </div>
     </div>
 </body>
 </html>
