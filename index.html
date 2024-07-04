@@ -282,15 +282,29 @@
         Configurar el bloque de servidor: Configura Nginx para actual como proxy inverso para el backend y el frontend de DSpace.<br>
         <b>`sudo service nginx restart`</b>: Reinicia el servicio Nginx para aplicar los cambios</div>
     </div>
-    <h3>14. Configurar HTTPS con Certbot</h3>
+    <h3>14. Generar certificado y la clave privada</h3>
     <div class="command-box">
-        <p class="command-title">sudo snap install --classic certbot<br>sudo ln -s /snap/bin/certbot /usr/bin/certbot<br>sudo certbot --nginx</p>
-        <div class="tooltip"><b>`sudo snap install --classic certbot`</b>: Instala Certbot usando snap.<br>
-            <b>`sudo ln -s /snap/bin/certbot /usr/bin/certbo`</b>: Crea un enlace simbolico para usar Certbot<br>
-            <b>`sudo certbot --nginx`</b>: Configura HTTPS para Nginx usando Certbot.
-        </div>
+        <p class="command-title">sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key-out /etc/ssl/certs/ nginx-selfsigned.crt</p>
     </div>
-    <h3>14. Crear la cuenta de administrador de DSpace</h3>
+    <h3>15. Crear un archivo de parametros Diffie-Hellman</h3>
+    <div class="command-box">
+        <p class="command-title">sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048</p>
+    </div>
+    <h3>16. Configurar Nginx para usar el certificado SSL</h3>
+    <div class="command-box">
+        <p class="command-title">sudo nano /etc/nginx/<br>sites-available/default<br></p>
+        <h4>Actualizar la configuracion del servidor para incluir las directivas SSL</h4>
+        <p class="command-title">server{<br>listen 80;<br>server_name grupodspace.co;<br>return 301<br>https://$host$request_uri<br>}<br>
+        <br>server{<br>listen 443 ssl;<br>server_name grupodspace.co;<br><br>ssl_certificate /etc/ssl/7certs/ nginx-selfsigned.ctr;<br>
+        ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;<br>ssl_dhparam /etc/ssl/certs/dhparam.pem;<br><br>
+        ssl_protocols TLSv1.2 TLSv1.3;<br>ssl_prefer_server_ciphers on;<br>ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";<br><br>
+        access_log /var/log/nginx/dspace-access.log;<br>error_log /var/log/nginx/dspace-error.log;<br><br>
+        location /server {<br>proxy_set_header X-Forwarded-Proto https;<br>proxy_set_header X-Forwarded-Host $server_name;<br>proxy_pass https://localhost:8080/server;<br>}<br><br>
+        location / {<br>proxy_set_header X-Forwarded-Host $host;<br>proxy_set_header X-Forwarded-Server $host;<br>proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;<br>proxy_pass https://localhost:4040/;<br>}<br>}</p>
+        <h4>Reiniciar Nginx</h4>
+        <p class="command-title">sudo systemctl restart nginx</p>
+    </div>
+    <h3>17. Crear la cuenta de administrador de DSpace</h3>
     <div class="command-box">
         <p class="command-title">cp /opt/dspace-7/server<br>sudo bin/dspace create-administrator</p>
         <div class="tooltip"><b>`cp /opt/dspace-7/server`</b>: Cambia el directorio del servidor DSpace<br>
